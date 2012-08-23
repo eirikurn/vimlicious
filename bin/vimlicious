@@ -1,0 +1,129 @@
+#!/bin/bash
+
+# Checks if a given function exists.
+fn_exists() {
+    [ `type -t $1`"" == 'function' ] && return 0 || return 1
+}
+
+# Checks if all required applications are installed.
+function check_requirements() {
+    command -v $0 >/dev/null 2>&1 || { echo >&2 "We need $0 but it's not installed. Without it, we are lost."; exit 1; }
+}
+
+# Displays help.
+function help() {
+    echo "usage $0 <command>";
+    echo "Available commands:"
+    echo "..."
+}
+
+function remove(){
+    # Check if the directory is in our bundle folder.
+    if [ ! -d "$HOME"/.vim/bundle/"$2" ]; then
+        echo "$2 does not exist"
+    else
+        cd "$HOME"/.vim
+        echo "$PWD"
+        PATH_TO_SUBMODULE=bundle/"$2"
+        git config -f .gitmodules --remove-section submodule.$PATH_TO_SUBMODULE
+        git config -f .git/config --remove-section submodule.$PATH_TO_SUBMODULE
+        git rm --cached $PATH_TO_SUBMODULE
+        rm -rf $PATH_TO_SUBMODULE
+        rm -rf .git/modules/$PATH_TO_SUBMODULE
+    fi
+}
+
+function installed() {
+    echo "Installed bundles:"
+    folder="$HOME"/.vim/bundle
+    DIRS=`ls -l $folder | egrep '^d' | awk '{print $9}'`
+    echo $DIRS
+}
+
+function install(){
+    SaveIFS=$IFS
+    IFS="/"
+    declare -a Array=($2)
+    IFS=$SaveIFS
+    echo "Array[0]=${Array[0]}"
+    echo "Array[1]=${Array[1]}"
+    cd "$HOME"/.vim
+    git submodule add git://github.com/"$2".git bundle/"${Array[1]}"
+    git submodule update
+}
+
+function clean() {
+    cd "$HOME" >& /dev/null
+    # Check if the cd was successful.
+    if [ "$('pwd')" != "$HOME" ];
+    then
+        echo "Unable to change directory into $HOME"
+        echo "Please check your HOME variable"
+        exit 2
+    fi
+    
+    # Ask the user if he wants to continue.
+    
+    while true
+    do
+        echo -n "Are you sure you want to perform this action (y/n)? "
+        read -e USER_APPROVAL_CLEAR
+
+        
+        if [ "$USER_APPROVAL_CLEAR" == "Y" -o "$USER_APPROVAL_CLEAR" == "y" ];
+        then
+            echo "Removing $HOME/.vim"
+            rm -rf "$HOME/.vim"
+            echo "Removing $HOME/.vimrc"
+            rm -rf "$HOME/.vimrc"
+            break
+        elif [ "$USER_APPROVAL_CLEAR" == "N" -o "$USER_APPROVAL_CLEAR" == "n" ];
+        then
+	    break
+	else
+            echo "Please answer only with 'y' or 'n'."
+        fi
+        
+    done      
+}
+
+function init() {
+    mkdir -p "$HOME"/.vim/autoload "$HOME"/.vim/bundle 
+    wget -O $HOME/.vim/autoload/pathogen.vim 'www.vim.org/scripts/download_script.php?src_id=16224' 
+    cp "$HOME"/.vimlicious/vimrc "$HOME/.vimrc"
+    cd "$HOME/.vim"
+    git init
+    
+}
+
+function search(){
+    cd "$HOME"/.vimlicious/tools
+    python search.py $2
+}
+
+function handle_command() {
+    # Check if the command exists, if not the script
+    # stops with an error message end help usage.
+    if ! fn_exists $1; then
+        echo "Error: command $1 does not exist"
+        help
+        exit 2
+    fi
+    
+    # If the command is found, we execute it.
+    $1 "$@"
+}
+
+function main() {
+    check_requirements
+
+    # Check if we have any parameters.
+    if [ "$#" -ge "1" ];
+    then
+        handle_command "$@"
+    else
+        help
+    fi
+}
+
+main $*

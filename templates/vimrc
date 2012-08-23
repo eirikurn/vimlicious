@@ -1,0 +1,5 @@
+call pathogen#infect()
+" Local config
+if filereadable($HOME . "/.vimrc.local")
+    exec ":source " . $HOME . "/.vimrc.local"
+endif
