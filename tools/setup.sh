@@ -7,7 +7,7 @@ if [ -d "$HOME/.vimlicious" ]; then
 fi
 
 echo "\033[0;34mCloning vimlicious\033[0m"
-hash git >/dev/null && /usr/bin/env git clone https://github.com/hlysig/vimlicous.git ~/.vimlicous || {
+hash git >/dev/null && /usr/bin/env git clone https://github.com/hlysig/vimlicious.git ~/.vimlicous || {
     echo "\033[0;31mGit is not installed. Get it and run this script again.\033[0m"
     exit
 }
