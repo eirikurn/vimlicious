@@ -21,7 +21,7 @@ then
 fi
 
 echo "\033[0;34mUsing vimlicious template file and adding it to ~/.vimrc\033[0m"
-cp ~/.vimlicous/templates/vimrc ~/.zshrc
+cp ~/.vimlicous/templates/vimrc ~/.vimrc
 
 echo "\033[0;34m"'       _           _ _      _                  '"\033[0m"           
 echo "\033[0;34m"'      (_)         | (_)    (_)                 '"\033[0m"
