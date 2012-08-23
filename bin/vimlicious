@@ -91,7 +91,7 @@ function init() {
     rm -rf ~/.vim
     mkdir -p "$HOME"/.vim/autoload "$HOME"/.vim/bundle 
     wget -O $HOME/.vim/autoload/pathogen.vim 'www.vim.org/scripts/download_script.php?src_id=16224' 
-    cp "$HOME"/.vimlicious/vimrc "$HOME/.vimrc"
+    cp "$HOME"/.vimlicious/templates/vimrc "$HOME/.vimrc"
     cd "$HOME/.vim"
     git init
     
