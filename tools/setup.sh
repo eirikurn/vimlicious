@@ -23,10 +23,15 @@ fi
 echo "\033[0;34mUsing vimlicious template file and adding it to ~/.vimrc\033[0m"
 cp ~/.vimlicious/templates/vimrc ~/.vimrc
 
+echo "\033[0;34minitializing vimlicious..\033[0m"
+export PATH=$PATH:~/.vimlicious/bin
+vimlicious init
+
+
 echo "\033[0;34m"'       _           _ _      _                  '"\033[0m"           
 echo "\033[0;34m"'      (_)         | (_)    (_)                 '"\033[0m"
 echo "\033[0;34m"'__   ___ _ __ ___ | |_  ___ _  ___  _   _ ___  '"\033[0m"
 echo "\033[0;34m"'\ \ / / |  _   _ \| | |/ __| |/ _ \| | | / __| '"\033[0m"
 echo "\033[0;34m"' \ V /| | | | | | | | | (__| | (_) | |_| \__ \ '"\033[0m"
 echo "\033[0;34m"'  \_/ |_|_| |_| |_|_|_|\___|_|\___/ \__,_|___/ '"\033[0m"
-echo "\n\n \033[0;32m....is ready to rock.\033[0m"
+echo "\n\n \033[0;34m....is ready to rock.\033[0m"
