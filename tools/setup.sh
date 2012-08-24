@@ -1,4 +1,3 @@
-
 # Check if vimlicious is already installed.
 if [ -d "$HOME/.vimlicious" ]; then
     echo "\033[0;31mYou already have vimlicious installed.\033[0m"
@@ -15,7 +14,7 @@ hash git >/dev/null && /usr/bin/env git clone https://github.com/hlysig/vimlicio
 echo "\033[0;34mLooking for an existing vim config...\033[0m"
 if [ -f ~/.vimrc ] || [ -h ~/.vimrc ]
 then
-  echo "\033[0;33mFound ~/.vimrc.\033[0m \033[0;32]Backing up to ~/.vim.pre-vimlicious\033[0m";
+  echo "\033[0;33mFound ~/.vimrc.\033[0m \033[0;32]Backing up to ~/.vimrc.pre-vimlicious\033[0m";
   cp ~/.vimrc ~/.vimrc.pre-vimlicious;
   rm ~/.vimrc;
 fi
@@ -23,10 +22,21 @@ fi
 echo "\033[0;34mUsing vimlicious template file and adding it to ~/.vimrc\033[0m"
 cp ~/.vimlicious/templates/vimrc ~/.vimrc
 
+
+echo "\033[0;34mLooking for an existing local vim config...\033[0m"
+if [ -f ~/.vimrc.local ] || [ -h ~/.vimrc.local ]
+then
+  echo "\033[0;33mFound ~/.vimrc.local.\033[0m \033[0;32]Backing up to ~/.vimrc.local.pre-vimlicious\033[0m";
+  cp ~/.vimrc.local ~/.vimrc.local.pre-vimlicious;
+  rm ~/.vimrc.local;
+fi
+
+echo "\033[0;34mCreating empty .vimrc.local. Place all your vim configuration there.\033[0m"
+touch ~/.vimrc.local
+
 echo "\033[0;34minitializing vimlicious..\033[0m"
 export PATH=$PATH:~/.vimlicious/bin
 vimlicious init
-
 
 echo "\033[0;34m"'       _           _ _      _                  '"\033[0m"           
 echo "\033[0;34m"'      (_)         | (_)    (_)                 '"\033[0m"
