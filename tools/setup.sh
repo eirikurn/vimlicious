@@ -36,7 +36,7 @@ touch ~/.vimrc.local
 
 echo "\033[0;34minitializing vimlicious..\033[0m"
 export PATH=$PATH:~/.vimlicious/bin
-vimlicious init
+~/.vimlicious/vimlicious init
 
 echo "\033[0;34m"'       _           _ _      _                  '"\033[0m"           
 echo "\033[0;34m"'      (_)         | (_)    (_)                 '"\033[0m"
