@@ -48,6 +48,7 @@ function remove() {
         git rm --cached $PATH_TO_SUBMODULE
         rm -rf $PATH_TO_SUBMODULE
         rm -rf .git/modules/$PATH_TO_SUBMODULE
+    	git commit -m "Removed submodule $2"
         echo "Bundle $2 has been removed" | out_info
     fi
 }
@@ -82,6 +83,7 @@ function install() {
     cd "$HOME"/.vim
     git submodule add git://github.com/"$2".git bundle/"${Array[1]}"
     git submodule update
+    git commit -m "Added submodule $2"
 }
 
 function clean() {
