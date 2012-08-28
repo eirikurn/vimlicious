@@ -125,7 +125,9 @@ function init() {
     mkdir -p "$HOME"/.vim/autoload "$HOME"/.vim/bundle 
     # Fetch the pathogen script that we love and use.
     wget -O $HOME/.vim/autoload/pathogen.vim 'www.vim.org/scripts/download_script.php?src_id=16224' 
-    
+
+    echo "readme" > ~/.vim/bundle/readme.txt
+
     cp "$HOME/.vimlicious/templates/vimrc" "$HOME/.vim/vimrc"
     ln -s "$HOME/.vim/vimrc" "$HOME/.vimrc"
 
