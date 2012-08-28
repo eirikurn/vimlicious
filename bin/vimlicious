@@ -1,35 +1,54 @@
 #!/bin/bash
+out_info () {
+    while IFS= read x
+    do
+        echo -e "\033[32;5;148m$x\033[39m"
+    done
+}
+
+out_command () {
+    while IFS= read x
+    do
+      echo -e "\033[33;5;148m$x\033[39m"
+    done
+}
+
+out_error() {
+    while IFS= read x
+    do
+      echo -e "\033[31;5;148m$x\033[39m"
+    done
+}
 
 # Checks if a given function exists.
 fn_exists() {
     [ `type -t $1`"" == 'function' ] && return 0 || return 1
 }
 
-# Checks if all required applications are installed.
-function check_requirements() {
-    command -v $0 >/dev/null 2>&1 || { echo >&2 "We need $0 but it's not installed. Without it, we are lost."; exit 1; }
-}
-
 # Displays help.
 function help() {
-    echo "usage $0 <command>";
-    echo "Available commands:"
-    echo "..."
+    echo "usage: vimlicious <command>" | out_info
+    echo "Available commands:" | out_info
+    echo "  remove" | out_command
+    echo "  install" | out_command
+    echo "  installed" | out_command
+    echo "  init" | out_command
+    echo "  clean" | out_command
 }
 
-function remove(){
+function remove() {
     # Check if the directory is in our bundle folder.
     if [ ! -d "$HOME"/.vim/bundle/"$2" ]; then
-        echo "$2 does not exist"
+        echo "$2 does not exist" | out_error
     else
         cd "$HOME"/.vim
-        echo "$PWD"
         PATH_TO_SUBMODULE=bundle/"$2"
         git config -f .gitmodules --remove-section submodule.$PATH_TO_SUBMODULE
         git config -f .git/config --remove-section submodule.$PATH_TO_SUBMODULE
         git rm --cached $PATH_TO_SUBMODULE
         rm -rf $PATH_TO_SUBMODULE
         rm -rf .git/modules/$PATH_TO_SUBMODULE
+        echo "$2 bundle has been removed" | out_info
     fi
 }
 
@@ -37,16 +56,14 @@ function installed() {
     echo "Installed bundles:"
     folder="$HOME"/.vim/bundle
     DIRS=`ls -l $folder | egrep '^d' | awk '{print $9}'`
-    echo $DIRS
+    echo $DIRS | out_info
 }
 
-function install(){
+function install() {
     SaveIFS=$IFS
     IFS="/"
     declare -a Array=($2)
     IFS=$SaveIFS
-    echo "Array[0]=${Array[0]}"
-    echo "Array[1]=${Array[1]}"
     cd "$HOME"/.vim
     git submodule add git://github.com/"$2".git bundle/"${Array[1]}"
     git submodule update
@@ -69,7 +86,6 @@ function clean() {
         echo -n "Are you sure you want to perform this action (y/n)? "
         read -e USER_APPROVAL_CLEAR
 
-        
         if [ "$USER_APPROVAL_CLEAR" == "Y" -o "$USER_APPROVAL_CLEAR" == "y" ];
         then
             echo "Removing $HOME/.vim"
@@ -87,14 +103,21 @@ function clean() {
     done      
 }
 
-function init() {
-    rm -rf ~/.vim
+function init() {    
+    # Create .vim .autoload and .bundle directories for user.
     mkdir -p "$HOME"/.vim/autoload "$HOME"/.vim/bundle 
+    # Fetch the pathogen script that we love and use.
     wget -O $HOME/.vim/autoload/pathogen.vim 'www.vim.org/scripts/download_script.php?src_id=16224' 
-    cp "$HOME"/.vimlicious/templates/vimrc "$HOME/.vimrc"
+    
+    cp "$HOME/.vimlicious/templates/vimrc" "$HOME/.vim/vimrc"
+    ln -s "$HOME/.vim/vimrc" "$HOME/.vimrc"
+
     cd "$HOME/.vim"
     git init
-    
+    git add bundle autoload vimrc
+    git commit -m "Adding inital files for vimlicious"
+
+
 }
 
 function search(){
@@ -116,8 +139,6 @@ function handle_command() {
 }
 
 function main() {
-    check_requirements
-
     # Check if we have any parameters.
     if [ "$#" -ge "1" ];
     then
