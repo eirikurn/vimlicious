@@ -39,7 +39,7 @@ function help() {
 function remove() {
     # Check if the directory is in our bundle folder.
     if [ ! -d "$HOME"/.vim/bundle/"$2" ]; then
-        echo "$2 does not exist" | out_error
+        echo "No bundle $2 was found. Perhaps not installed?" | out_error
     else
         cd "$HOME"/.vim
         PATH_TO_SUBMODULE=bundle/"$2"
@@ -48,7 +48,22 @@ function remove() {
         git rm --cached $PATH_TO_SUBMODULE
         rm -rf $PATH_TO_SUBMODULE
         rm -rf .git/modules/$PATH_TO_SUBMODULE
-        echo "$2 bundle has been removed" | out_info
+        echo "Bundle $2 has been removed" | out_info
+    fi
+}
+
+function update() {
+    cd ~/.vim
+    if [ -z "$2" ]; then
+        git submodule update
+        echo "All bundles have been updated." | out_info
+    else
+        if [ ! -d "$HOME"/.vim/bundle/"$2" ]; then
+            echo "No bundle $2 was found. Perhaps not installed?" | out_error
+            exit
+        fi
+        git submodule update "bundle/$2"
+        echo "Updated bundle $2" | out_info
     fi
 }
 
