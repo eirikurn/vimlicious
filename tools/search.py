@@ -20,12 +20,13 @@ if __name__ == '__main__':
     # repo names with repsect to github rules.
 
     c = httplib.HTTPSConnection("api.github.com")
-    c.request("GET", "/legacy/repos/search/" + repo_search_string)
+    c.request("GET", "/legacy/repos/search/%s?language=VimL" % repo_search_string)
     response = c.getresponse()
     data = response.read()
     d = json.loads(data)
 
-    repos = [r for r in d['repositories'] if r['fork'] is False and 'language' in r and r['language']=='VimL' ]
+    repos = [r for r in d['repositories'] if r['fork'] is False and repo_search_string in r['name']]
+    repos.sort(key=lambda r: r['forks'], reverse=True)
 
     if len(repos) == 0:
         cout('No GIT repository found with name "%s"' % (repo_search_string), '91')
